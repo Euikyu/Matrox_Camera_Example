@@ -423,6 +423,7 @@ namespace Matrox_Camera_Example.Device
                 return m_Err;
             }
         }
+
         private ERR_RESULT CaptureCrevisImage()
         {
             ERR_RESULT m_Err = new ERR_RESULT();
