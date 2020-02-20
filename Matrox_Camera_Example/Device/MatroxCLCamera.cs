@@ -87,7 +87,9 @@ namespace Matrox_Camera_Example.Device
                         for (int ii = 0; ii < digCount; ii++)
                         {
                             //tnwjdtnwjd119 : 나중에 xml 클래스로 저장된 경로 불러오는 것으로 교체
-                            string dcfPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Matrox_MC-A500x-163_8TAP_8bit_CC1.dcf";
+                            //string dcfPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Matrox_MC-A500x-163_8TAP_8bit_CC1.dcf";
+                            //string dcfPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Matrox_MC-A500x-163_8TAP_8bit_CC1_HWTRIG.dcf";
+                            string dcfPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\Matrox_MC-A500x-163_8TAP_8bit_CC1_CON.dcf";
                             //tnwjdtnwjd119 : 나중에 xml 클래스로 pixelFormat 불러오는 것으로 교체
                             var cam = new MatroxCLCamDevice(systemId, ii, (EMatroxBoardType)Enum.Parse(typeof(EMatroxBoardType), sb.ToString()), dcfPath, "Mono 8");
                             m_Err = cam.Open();

@@ -168,42 +168,53 @@ namespace Matrox_Camera_Example.Device
         #region Methods
         private void ConvertImage()
         {
-            if (PixelFormat.Contains("Mono"))
+            try
             {
-                int bpp = System.Windows.Media.PixelFormats.Gray8.BitsPerPixel;
-                int stride = (m_Width * bpp + 7) / 8;
+                if (PixelFormat.Contains("Mono"))
+                {
+                    int bpp = System.Windows.Media.PixelFormats.Gray8.BitsPerPixel;
+                    int stride = (m_Width * bpp + 7) / 8;
 
-                var monoBmp = new Bitmap(m_Width, m_Height, stride, System.Drawing.Imaging.PixelFormat.Format8bppIndexed, m_PImage);
-                var bitmapData = monoBmp.LockBits(new Rectangle(0, 0, monoBmp.Width, monoBmp.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, monoBmp.PixelFormat);
+                    var monoBmp = new Bitmap(m_Width, m_Height, stride, System.Drawing.Imaging.PixelFormat.Format8bppIndexed, m_PImage);
+                    var bitmapData = monoBmp.LockBits(new Rectangle(0, 0, monoBmp.Width, monoBmp.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, monoBmp.PixelFormat);
 
-                m_BitmapSourceImage = BitmapSource.Create(
-                        bitmapData.Width, bitmapData.Height,
-                        monoBmp.HorizontalResolution, monoBmp.VerticalResolution,
-                        System.Windows.Media.PixelFormats.Gray8, null,
-                        bitmapData.Scan0, bitmapData.Stride * bitmapData.Height, bitmapData.Stride);
+                    m_BitmapSourceImage = BitmapSource.Create(
+                            bitmapData.Width, bitmapData.Height,
+                            monoBmp.HorizontalResolution, monoBmp.VerticalResolution,
+                            System.Windows.Media.PixelFormats.Gray8, null,
+                            bitmapData.Scan0, bitmapData.Stride * bitmapData.Height, bitmapData.Stride);
 
-                monoBmp.UnlockBits(bitmapData);
-                SetGrayscalePalette(monoBmp);
-                m_BitmapImage = monoBmp;
-                m_BitmapSourceImage.Freeze();
+                    monoBmp.UnlockBits(bitmapData);
+                    SetGrayscalePalette(monoBmp);
+                    m_BitmapImage = monoBmp;
+                    m_BitmapSourceImage.Freeze();
+                }
+                else if (PixelFormat.Contains("Bayer"))
+                {
+                    int bpp = System.Windows.Media.PixelFormats.Bgr24.BitsPerPixel;
+                    int stride = (m_Width * bpp + 7) / 8;
+
+                    var colorBmp = new Bitmap(m_Width, m_Height, stride, System.Drawing.Imaging.PixelFormat.Format24bppRgb, m_PImage);
+                    var bitmapData = colorBmp.LockBits(new Rectangle(0, 0, colorBmp.Width, colorBmp.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, colorBmp.PixelFormat);
+
+                    m_BitmapSourceImage = BitmapSource.Create(
+                            bitmapData.Width, bitmapData.Height,
+                            colorBmp.HorizontalResolution, colorBmp.VerticalResolution,
+                            System.Windows.Media.PixelFormats.Bgr24, null,
+                            bitmapData.Scan0, bitmapData.Stride * bitmapData.Height, bitmapData.Stride);
+
+                    colorBmp.UnlockBits(bitmapData);
+                    m_BitmapImage = colorBmp;
+                    m_BitmapSourceImage.Freeze();
+                }
             }
-            else if (PixelFormat.Contains("Bayer"))
+            catch(ArgumentException)
             {
-                int bpp = System.Windows.Media.PixelFormats.Bgr24.BitsPerPixel;
-                int stride = (m_Width * bpp + 7) / 8;
 
-                var colorBmp = new Bitmap(m_Width, m_Height, stride, System.Drawing.Imaging.PixelFormat.Format24bppRgb, m_PImage);
-                var bitmapData = colorBmp.LockBits(new Rectangle(0, 0, colorBmp.Width, colorBmp.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, colorBmp.PixelFormat);
-
-                m_BitmapSourceImage = BitmapSource.Create(
-                        bitmapData.Width, bitmapData.Height,
-                        colorBmp.HorizontalResolution, colorBmp.VerticalResolution,
-                        System.Windows.Media.PixelFormats.Bgr24, null,
-                        bitmapData.Scan0, bitmapData.Stride * bitmapData.Height, bitmapData.Stride);
-
-                colorBmp.UnlockBits(bitmapData);
-                m_BitmapImage = colorBmp;
-                m_BitmapSourceImage.Freeze();
+            }
+            catch(Exception err)
+            {
+                MessageBox.Show(err.Message);
             }
         }
 

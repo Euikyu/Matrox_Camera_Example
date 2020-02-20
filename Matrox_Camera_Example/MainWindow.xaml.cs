@@ -40,36 +40,49 @@ namespace Matrox_Camera_Example
 
         private void Continuous_Grab(object status)
         {
-            for (int i = 0; i < 10; i++)
+            while (true)
             {
-                var res = dev.Grab(Device.ETriggerOption.Continuous);
-                Dispatcher.Invoke(new Action(() =>
+                for (int i = 0; i < 1; i++)
                 {
-                    ImageCon.Source = dev.CameraList[0].CrevisImage.BitmapSourceImage;
-                }), System.Windows.Threading.DispatcherPriority.DataBind);
-                lock (aaa)
-                {
-                    Test.Add(dev.CameraList[0].CrevisImage);
-                }
+                    DateTime grabStart = DateTime.Now;
+                    var res = dev.Grab(Device.ETriggerOption.Continuous);
+                    if (res.ErrCode != Err.ErrProcess.ERR_SUCCESS) MessageBox.Show("Grab error.");
+                    Dispatcher.Invoke(new Action(() =>
+                    {
+                        GrabTime.Text = (DateTime.Now - grabStart).TotalMilliseconds.ToString("0.00");
+                        DateTime dispStart = DateTime.Now;
+                        ImageCon.Source = dev.CameraList[0].CrevisImage.BitmapSourceImage;
+                        DisplayTime.Text = (DateTime.Now - dispStart).TotalMilliseconds.ToString("0.00");
 
-            }
-            lock (aaa)
-            {
-                foreach (var bmp in Test)
-                {
-                    var str = AppDomain.CurrentDomain.BaseDirectory + DateTime.Now.ToString("HHmmss_ffff") + ".bmp";
-                    bmp.BitmapImage.Save(str, System.Drawing.Imaging.ImageFormat.Bmp);
-                    bmp.Dispose();
+                    }), System.Windows.Threading.DispatcherPriority.DataBind);
+                    //lock (aaa)
+                    //{
+                    //    Test.Add(dev.CameraList[0].CrevisImage);
+                    //}
+
                 }
-                Test.Clear();
+                //lock (aaa)
+                //{
+                //    foreach (var bmp in Test)
+                //    {
+                //        var str = AppDomain.CurrentDomain.BaseDirectory + DateTime.Now.ToString("HHmmss_ffff") + ".bmp";
+                //        //bmp.BitmapImage.Save(str, System.Drawing.Imaging.ImageFormat.Bmp);
+                //        bmp.Dispose();
+                //    }
+                //    Test.Clear();
+                //}
             }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            ThreadPool.QueueUserWorkItem(Continuous_Grab);
+            dev.CameraList.OfType<Device.MatroxCLCamDevice>().First().SoftwareTrigger();
         }
         object aaa = new object();
-        
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            dev.Dispose();
+        }
     }
 }

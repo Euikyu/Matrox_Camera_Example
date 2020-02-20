@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using Matrox_Camera_Example.Err;
 using Matrox.MatroxImagingLibrary;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace Matrox_Camera_Example.Device
 {
@@ -53,7 +54,7 @@ namespace Matrox_Camera_Example.Device
         private MIL_ID m_System;
         private MIL_ID m_Digitizer;
         private MIL_ID m_MilImageBuffer;
-
+        private bool m_IsGrabCancel;
         #endregion
 
         #region Properties
@@ -314,7 +315,9 @@ namespace Matrox_Camera_Example.Device
                 }
                 //이미지 버퍼 등록
                 MIL.MbufAllocColor(m_System, tmpChannel, Width, Height, 8, MIL.M_IMAGE + MIL.M_GRAB + MIL.M_PROC, ref m_MilImageBuffer);
-                
+                ////카메라 그랩 변수 초기화
+                m_IsGrabCancel = false;
+
                 IsAcqStart = true;
 
                 return m_Err;
@@ -347,6 +350,11 @@ namespace Matrox_Camera_Example.Device
             {
                 if (IsDisposed) throw new CREVIS_CameraException(ErrProcess.CLASS_DISPOSED_ERR);
                 if (!IsAcqStart) return m_Err;
+
+                //그랩 중이면 취소
+                m_IsGrabCancel = true;
+                MIL.MdigControl(m_Digitizer, MIL.M_GRAB_ABORT, MIL.M_DEFAULT);
+                MIL.MdigHalt(m_Digitizer);
 
                 //이미지 버퍼 해제
                 if (m_MilImageBuffer != MIL.M_NULL)
@@ -388,21 +396,10 @@ namespace Matrox_Camera_Example.Device
             {
                 if (IsDisposed) throw new CREVIS_CameraException(ErrProcess.CLASS_DISPOSED_ERR);
                 if (!IsAcqStart) throw new CREVIS_CameraException(ErrProcess.CAM_NOT_START_ERR);
+                
+                MIL.MdigGrab(m_Digitizer, m_MilImageBuffer);
 
-                switch (option)
-                {
-                    case ETriggerOption.Continuous:
-                        MIL.MdigGrab(m_Digitizer, m_MilImageBuffer);
-                        break;
-
-                    case ETriggerOption.Hardware:
-
-                        break;
-
-                    case ETriggerOption.Software:
-
-                        break;
-                }
+                if (m_IsGrabCancel) return m_Err;
                 m_Err = CaptureCrevisImage();
 
                 return m_Err;
@@ -490,6 +487,28 @@ namespace Matrox_Camera_Example.Device
             catch (CREVIS_CameraException err)
             {
                 m_Err = ErrProcess.SetErrResult(err);
+                return m_Err;
+            }
+            catch (Exception err)
+            {
+                m_Err = ErrProcess.SetErrResult(err);
+                return m_Err;
+            }
+        }
+
+        public ERR_RESULT SoftwareTrigger()
+        {
+            ERR_RESULT m_Err = new ERR_RESULT();
+            try
+            {
+                MIL.MdigControl(m_Digitizer, MIL.M_TIMER_TRIGGER_SOFTWARE, MIL.M_ACTIVATE);
+                MIL.MdigControl(m_Digitizer, MIL.M_GRAB_TRIGGER_SOFTWARE, MIL.M_ACTIVATE);
+
+                return m_Err;
+            }
+            catch (MILException err)
+            {
+                m_Err = ErrProcess.SetErrResult(err, ErrProcess.MIL_ERR, err.Message);
                 return m_Err;
             }
             catch (Exception err)
