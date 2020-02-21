@@ -99,7 +99,7 @@ namespace Matrox_Camera_Example.Device
         }
         
         /// <summary>
-        /// .DCF(Digitizer Camera File) 의 존재 여부를 가져옵니다.
+        /// .DCF 의 존재 여부를 가져옵니다.
         /// </summary>
         public bool ExistDCF
         {
@@ -150,7 +150,7 @@ namespace Matrox_Camera_Example.Device
         public bool IsDisposed { get; private set; }
 
         /// <summary>
-        /// .DCF(Digitizer Camera File) 의 절대경로를 가져옵니다.
+        /// .DCF 의 절대경로를 가져옵니다.
         /// </summary>
         public string CamFilePath { get; private set; }
 
@@ -421,6 +421,32 @@ namespace Matrox_Camera_Example.Device
             }
         }
 
+        /// <summary>
+        /// Matrox Software 모드일 경우 이미지 취득을 진행하기 위한 트리거를 발생시킵니다.
+        /// </summary>
+        /// <returns></returns>
+        public ERR_RESULT SoftwareTrigger()
+        {
+            ERR_RESULT m_Err = new ERR_RESULT();
+            try
+            {
+                MIL.MdigControl(m_Digitizer, MIL.M_TIMER_TRIGGER_SOFTWARE, MIL.M_ACTIVATE);
+                MIL.MdigControl(m_Digitizer, MIL.M_GRAB_TRIGGER_SOFTWARE, MIL.M_ACTIVATE);
+
+                return m_Err;
+            }
+            catch (MILException err)
+            {
+                m_Err = ErrProcess.SetErrResult(err, ErrProcess.MIL_ERR, err.Message);
+                return m_Err;
+            }
+            catch (Exception err)
+            {
+                m_Err = ErrProcess.SetErrResult(err);
+                return m_Err;
+            }
+        }
+
         private ERR_RESULT CaptureCrevisImage()
         {
             ERR_RESULT m_Err = new ERR_RESULT();
@@ -487,28 +513,6 @@ namespace Matrox_Camera_Example.Device
             catch (CREVIS_CameraException err)
             {
                 m_Err = ErrProcess.SetErrResult(err);
-                return m_Err;
-            }
-            catch (Exception err)
-            {
-                m_Err = ErrProcess.SetErrResult(err);
-                return m_Err;
-            }
-        }
-
-        public ERR_RESULT SoftwareTrigger()
-        {
-            ERR_RESULT m_Err = new ERR_RESULT();
-            try
-            {
-                MIL.MdigControl(m_Digitizer, MIL.M_TIMER_TRIGGER_SOFTWARE, MIL.M_ACTIVATE);
-                MIL.MdigControl(m_Digitizer, MIL.M_GRAB_TRIGGER_SOFTWARE, MIL.M_ACTIVATE);
-
-                return m_Err;
-            }
-            catch (MILException err)
-            {
-                m_Err = ErrProcess.SetErrResult(err, ErrProcess.MIL_ERR, err.Message);
                 return m_Err;
             }
             catch (Exception err)

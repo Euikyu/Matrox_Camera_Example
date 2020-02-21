@@ -8,7 +8,7 @@
         Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded" Closing="Window_Closing">
     <Grid>
         <Image Name="ImageCon" Margin="0,0,125,24"/>
-        <Button Content=" Grab" Margin="0,184,10,186" Click="Button_Click" HorizontalAlignment="Right" Width="100"/>
+        <Button Content="SW__Trigger" Margin="0,184,10,186" Click="Button_Click" HorizontalAlignment="Right" Width="100"/>
         <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal">
             <TextBlock Text="영상 그랩 시간 : "/>
             <TextBlock Name="GrabTime"/>

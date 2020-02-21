@@ -31,6 +31,9 @@ namespace Matrox_Camera_Example.Err
         public const int CAM_NOT_START_ERR = -104;
         public const int CAM_NOT_SUPPORT_PIXEL_FORMAT = -105;
         public const int CAM_OUT_OF_INDEX = -106;
+
+        public const int XML_WRONG_PARSE_DATA = -201;
+        public const int XML_NOT_EXIST_DATA = -202;
         #endregion
 
         #region Properties
@@ -149,10 +152,17 @@ namespace Matrox_Camera_Example.Err
                     errMessage = "CAM - Cam doesn't support this pixel format.";
                     break;
                 case CAM_OUT_OF_INDEX:
-                    errMessage = "CAM - Not exists camera index (or user id).";
+                    errMessage = "CAM - Camera index (or user id) Not exists.";
                     break;
 
 
+                //Xml Exception
+                case XML_WRONG_PARSE_DATA:
+                    errMessage = "XML - Wrong parsed data.";
+                    break;
+                case XML_NOT_EXIST_DATA:
+                    errMessage = "XML - Device number (or board type) not exists.";
+                    break;
 
 
 

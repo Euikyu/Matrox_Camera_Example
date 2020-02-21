@@ -21,7 +21,7 @@ namespace Matrox_Camera_Example
     /// </summary>
     public partial class MainWindow : Window
     {
-        Device.MatroxCLCamera dev;
+        Device.MatroxCLCamera cam;
         public List<Device.CrevisImage> Test;
         public MainWindow()
         {
@@ -32,9 +32,9 @@ namespace Matrox_Camera_Example
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            dev = new Device.MatroxCLCamera();
-            var res = dev.Open();
-            res = dev.AcqStart();
+            cam = new Device.MatroxCLCamera();
+            var res = cam.Open();
+            res = cam.AcqStart();
             ThreadPool.QueueUserWorkItem(Continuous_Grab);
         }
 
@@ -45,13 +45,13 @@ namespace Matrox_Camera_Example
                 for (int i = 0; i < 1; i++)
                 {
                     DateTime grabStart = DateTime.Now;
-                    var res = dev.Grab(Device.ETriggerOption.Continuous);
+                    var res = cam.Grab(Device.ETriggerOption.Continuous);
                     if (res.ErrCode != Err.ErrProcess.ERR_SUCCESS) MessageBox.Show("Grab error.");
                     Dispatcher.Invoke(new Action(() =>
                     {
                         GrabTime.Text = (DateTime.Now - grabStart).TotalMilliseconds.ToString("0.00");
                         DateTime dispStart = DateTime.Now;
-                        ImageCon.Source = dev.CameraList[0].CrevisImage.BitmapSourceImage;
+                        ImageCon.Source = cam.CameraList[0].CrevisImage.BitmapSourceImage;
                         DisplayTime.Text = (DateTime.Now - dispStart).TotalMilliseconds.ToString("0.00");
 
                     }), System.Windows.Threading.DispatcherPriority.DataBind);
@@ -76,13 +76,13 @@ namespace Matrox_Camera_Example
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            dev.CameraList.OfType<Device.MatroxCLCamDevice>().First().SoftwareTrigger();
+            cam.CameraList.OfType<Device.MatroxCLCamDevice>().First().SoftwareTrigger();
         }
         object aaa = new object();
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            dev.Dispose();
+            cam.Dispose();
         }
     }
 }
