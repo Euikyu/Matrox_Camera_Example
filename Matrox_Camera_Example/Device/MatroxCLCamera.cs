@@ -8,6 +8,8 @@ using Matrox.MatroxImagingLibrary;
 using Matrox_Camera_Example.Err;
 using Matrox_Camera_Example.Xml;
 
+
+//Matrox.MatroxImagingLibrary.dll 참조 필요
 namespace Matrox_Camera_Example.Device
 {
     /// <summary>

@@ -11,6 +11,7 @@ using Matrox.MatroxImagingLibrary;
 using System.Runtime.InteropServices;
 using System.Threading;
 
+//Matrox.MatroxImagingLibrary.dll 참조 필요
 namespace Matrox_Camera_Example.Device
 {
     /// <summary>
