@@ -47,9 +47,10 @@ namespace Matrox_Camera_Example
                     DateTime grabStart = DateTime.Now;
                     var res = cam.Grab(Device.ETriggerOption.Continuous);
                     if (res.ErrCode != Err.ErrProcess.ERR_SUCCESS) MessageBox.Show("Grab error.");
+                    DateTime grabStop = DateTime.Now;
                     Dispatcher.Invoke(new Action(() =>
                     {
-                        GrabTime.Text = (DateTime.Now - grabStart).TotalMilliseconds.ToString("0.00");
+                        GrabTime.Text = (grabStop - grabStart).TotalMilliseconds.ToString("0.00");
                         DateTime dispStart = DateTime.Now;
                         ImageCon.Source = cam.CameraList[0].CrevisImage.BitmapSourceImage;
                         DisplayTime.Text = (DateTime.Now - dispStart).TotalMilliseconds.ToString("0.00");

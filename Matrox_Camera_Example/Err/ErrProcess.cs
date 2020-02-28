@@ -31,6 +31,7 @@ namespace Matrox_Camera_Example.Err
         public const int CAM_NOT_START_ERR = -104;
         public const int CAM_NOT_SUPPORT_PIXEL_FORMAT = -105;
         public const int CAM_OUT_OF_INDEX = -106;
+        public const int CAM_GRAB_ABORT_ERR = -107;
 
         public const int XML_WRONG_PARSE_DATA = -201;
         public const int XML_NOT_EXIST_DATA = -202;
@@ -154,7 +155,9 @@ namespace Matrox_Camera_Example.Err
                 case CAM_OUT_OF_INDEX:
                     errMessage = "CAM - Camera index (or user id) Not exists.";
                     break;
-
+                case CAM_GRAB_ABORT_ERR:
+                    errMessage = "CAM - Camera aborted the process while grabbing the image.";
+                    break;
 
                 //Xml Exception
                 case XML_WRONG_PARSE_DATA:
