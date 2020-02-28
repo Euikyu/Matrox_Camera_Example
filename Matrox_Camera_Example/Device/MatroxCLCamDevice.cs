@@ -400,7 +400,7 @@ namespace Matrox_Camera_Example.Device
                 
                 MIL.MdigGrab(m_Digitizer, m_MilImageBuffer);
 
-                if (m_IsGrabCancel) throw new CREVIS_CameraException(ErrProcess.CLASS_DISPOSED_ERR);
+                if (m_IsGrabCancel) throw new CREVIS_CameraException(ErrProcess.CAM_GRAB_ABORT_ERR);
                 m_Err = CaptureCrevisImage();
 
                 return m_Err;
